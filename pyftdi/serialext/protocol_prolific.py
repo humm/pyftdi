@@ -37,7 +37,7 @@ class ProlificSerial(UsbSerial):
     """Serial port implementation for Prolific compatible with pyserial API"""
 
     BACKEND = 'pyprolific'
-    SCHEME = 'prolific://'
+    SCHEME = 'prolific'
     # the following dictionaries should be augmented to support the various
     # VID/PID that actually map to a USB-serial Prolific device
     VENDOR_IDS = { 'prolific': 0x067b }

@@ -1189,7 +1189,7 @@ class N25QFlashDevice(_Gen25FlashDevice):
 
     def unlock(self):
         self._enable_write()
-        for sector in xrange(len(self)>>16):
+        for sector in range(len(self)>>16):
             addr = sector<<16
             wcmd = Array('B', [self.CMD_WRLR, 
                                (addr>>16) & 0xff,

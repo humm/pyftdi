@@ -29,7 +29,7 @@ from io import RawIOBase
 
 from pyftdi.pyftdi.ftdi import Ftdi, FtdiError
 from pyftdi.pyftdi.misc import to_int
-from serialusb import UsbSerial
+from .serialusb import UsbSerial
 
 __all__ = ['Serial']
 
@@ -65,7 +65,7 @@ class FtdiSerial(UsbSerial):
                            FtdiSerial.VENDOR_IDS,
                            FtdiSerial.PRODUCT_IDS,
                            FtdiSerial.DEFAULT_VENDOR)
-        except FtdiError, e:
+        except FtdiError as e:
             raise SerialException(str(e))
 
 

@@ -43,8 +43,8 @@ class FtdiTestCase(unittest.TestCase):
         ftdi2.open(interface=2)
         import time
         for x in range(5):
-            print "If#1: ", hex(ftdi1.poll_modem_status())
-            print "If#2: ", ftdi2.modem_status()
+            print("If#1: ", hex(ftdi1.poll_modem_status()))
+            print("If#2: ", ftdi2.modem_status())
             time.sleep(0.500)
         ftdi1.close()
         ftdi2.close()

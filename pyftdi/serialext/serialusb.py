@@ -39,8 +39,8 @@ class UsbSerial(SerialBase):
     """
 
     BAUDRATES = sorted([9600 * (x+1) for x in range(6)] +
-                       range(115200, 1000000, 115200) + \
-                       range(1000000, 13000000, 100000))
+                       list(range(115200, 1000000, 115200)) + \
+                       list(range(1000000, 13000000, 100000)))
 
     def makeDeviceName(self, port):
         return port
@@ -53,7 +53,7 @@ class UsbSerial(SerialBase):
         try:
             vendor, product, interface, sernum, ix = UsbTools.parse_url(
                 self.portstr, devclass, scheme, vdict, pdict, default_vendor)
-        except UsbToolsError, e:
+        except UsbToolsError as e:
             raise SerialException(str(e))
         try:
             self.udev = devclass()
@@ -163,7 +163,7 @@ class UsbSerial(SerialBase):
             except AttributeError:
                 # backend does not support this feature
                 pass
-        except IOError, e:
+        except IOError as e:
             from serial import SerialException
             err = self.udev.get_error_string()
             raise SerialException("%s (%s)" % (str(e), err))

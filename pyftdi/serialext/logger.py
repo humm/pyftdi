@@ -22,6 +22,7 @@
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+from __future__ import print_function
 
 import sys
 import types
@@ -36,9 +37,8 @@ class SerialLogger(object):
     def __init__(self, logpath):
         try:
             self._logger = open(logpath, "wt")
-        except IOError, e:
-            print >> sys.stderr, \
-                "Cannot log data to %s" % kwargs['logger']
+        except IOError as e:
+            print("Cannot log data to %s" % kwargs['logger'], file=sys.stderr)
         self._port = None
         self._methods = {}
 
@@ -62,33 +62,33 @@ class SerialLogger(object):
         if not self._logger:
             return
         try:
-            print >>self._logger, "READ:\n%s" % hexdump(data)
+            print("READ:\n%s" % hexdump(data), file=self._logger)
         except:
-            print >> sys.stderr, 'Cannot log read data'
+            print('Cannot log read data', file=sys.stderr)
 
     def _log_write(self, data):
         if not self._logger:
             return
         try:
-            print >>self._logger, "WRITE:\n%s" % hexdump(data)
+            print("WRITE:\n%s" % hexdump(data), file=self._logger)
         except:
-            print >>sys.stderr, 'Cannot log written data'
+            print('Cannot log written data', file=sys.stderr)
 
     def _log_flush(self, type_):
         if not self._logger:
             return
         try:
-            print >>self._logger, "FLUSH:  %s\n" % type_
+            print("FLUSH:  %s\n" % type_, file=self._logger)
         except:
-            print >>sys.stderr, 'Cannot log flush'
+            print('Cannot log flush', file=sys.stderr)
 
     def _log_waiting(self, count):
         if not self._logger:
             return
         try:
-            print >>self._logger, "INWAITING: %d\n" % count
+            print("INWAITING: %d\n" % count, file=self._logger)
         except:
-            print >>sys.stderr, 'Cannot log inwaiting'
+            print('Cannot log inwaiting', file=sys.stderr)
 
     def close(self):
         self._logger.close()

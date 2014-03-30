@@ -29,7 +29,11 @@
 
 from array import array as Array
 from numbers import Integral
-from pyftdi.pyftdi.misc import is_iterable, xor
+if sys.version_info[0] <= 2:
+    range = xrange
+
+from .misc import is_iterable, xor
+
 
 __all__ = ['BitSequence', 'BitZSequence', 'BitSequenceError', 'BitField']
 
@@ -80,7 +84,7 @@ class BitSequence(object):
                 elif byte > 0xff:
                     raise BitSequenceError("Invalid byte value")
                 b = []
-                for x in xrange(8):
+                for x in range(8):
                     b.append(byte&0x1 and True or False)
                     byte >>= 1
                 if msb:
@@ -157,7 +161,7 @@ class BitSequence(object):
         if not msb:
             sequence.reverse()
         bytes_ = Array('B')
-        for pos in xrange(0, blength, 8):
+        for pos in range(0, blength, 8):
             seq = sequence[pos:pos+8]
             byte = 0
             while seq:
@@ -274,7 +278,7 @@ class BitSequence(object):
         chunks = []
         srepr = repr(self)
         length = len(self)
-        for i in xrange(0, length, 8):
+        for i in range(0, length, 8):
             if i:
                 j = -i
             else:
@@ -499,7 +503,7 @@ class BitField(object):
         while value:
             count += 1
             value >>= 1
-        for x in xrange(lsb, max(msb, count)):
+        for x in range(lsb, max(msb, count)):
             seq.append(bool((self._val >> x) & 1))
         return tuple(reversed(seq))
 

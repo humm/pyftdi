@@ -561,7 +561,7 @@ class JtagTool(object):
         PATTERN_LEN = 8
         stuck = None
         for length in range(1, MAX_REG_LEN):
-            print "Testing for length %d" % length
+            print("Testing for length %d" % length)
             if length > 5:
                 return
             zero = BitSequence(length=length)
@@ -586,7 +586,7 @@ class JtagTool(object):
                     break
                 inj.inc()
             if ok:
-                print "Register detected length: %d" % length
+                print("Register detected length: %d" % length)
                 return length
         if stuck is not None:
             raise JtagError('TDO seems to be stuck')

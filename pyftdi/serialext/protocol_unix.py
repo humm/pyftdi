@@ -29,7 +29,7 @@ import select
 import socket
 import stat
 from io import RawIOBase
-from pyftdi.pyftdi.misc import hexdump
+from ..pyftdi.misc import hexdump
 from serial import SerialBase
 
 __all__ = ['Serial']
@@ -63,7 +63,7 @@ class SocketSerial(SerialBase):
                     filename = os.path.join(home, filename[2:])
             self._filename = filename
             self.sock.connect(self._filename)
-        except Exception, msg:
+        except Exception as msg:
             self.sock = None
             import serial
             raise serial.SerialException("Could not open port: %s" % msg)
@@ -119,7 +119,7 @@ class SocketSerial(SerialBase):
                         raise serial.writeTimeoutError
                 n = self.sock.send(d)
                 if self._dump:
-                    print hexdump(d[:n])
+                    print(hexdump(d[:n]))
                 if self._writeTimeout is not None and self._writeTimeout > 0:
                     _, ready, _ = select.select([], [self.sock], [],
                                                 self._writeTimeout)
@@ -127,7 +127,7 @@ class SocketSerial(SerialBase):
                         raise serial.writeTimeoutError
                 d = d[n:]
                 t = t - n
-            except OSError, v:
+            except OSError as v:
                 if v.errno != errno.EAGAIN:
                     raise
 

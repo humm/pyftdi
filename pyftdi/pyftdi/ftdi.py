@@ -30,7 +30,7 @@ import struct
 import usb.core
 import usb.util
 from array import array as Array
-from usbtools import UsbTools
+from .usbtools import UsbTools
 
 
 __all__ = ['Ftdi', 'FtdiError']
@@ -376,7 +376,7 @@ class Ftdi(object):
                                           index, '', self.usb_write_timeout):
                 raise FtdiError('Unable to set baudrate')
             self.baudrate = baudrate
-        except usb.core.USBError, e:
+        except usb.core.USBError as e:
             raise FtdiError('UsbError: %s' % str(e))
 
     def set_frequency(self, frequency):
@@ -491,7 +491,7 @@ class Ftdi(object):
                                           Ftdi.SIO_SET_FLOW_CTRL, 0,
                                           value, '', self.usb_write_timeout):
                 raise FtdiError('Unable to set flow control')
-        except usb.core.USBError, e:
+        except usb.core.USBError as e:
             raise FtdiError('UsbError: %s' % str(e))
 
     def set_dtr(self, state):
@@ -579,7 +579,7 @@ class Ftdi(object):
                     raise FtdiError("Usb bulk write error")
                 offset += length
             return offset
-        except usb.core.USBError, e:
+        except usb.core.USBError as e:
             raise FtdiError('UsbError: %s' % str(e))
 
     def read_data_bytes(self, size, attempt=1):
@@ -624,7 +624,7 @@ class Ftdi(object):
                         self.readbuffer = Array('B')
                         self.readoffset = 0
                         srcoff = 2
-                        for i in xrange(chunks):
+                        for i in range(chunks):
                             self.readbuffer += tempbuf[srcoff:srcoff+count]
                             srcoff += packet_size
                         length = len(self.readbuffer)
@@ -665,7 +665,7 @@ class Ftdi(object):
                                                 self.readoffset+part_size]
                         self.readoffset += part_size
                         return data
-        except usb.core.USBError, e:
+        except usb.core.USBError as e:
             raise FtdiError('UsbError: %s' % str(e))
         # never reached
         raise FtdiError("Internal error")
@@ -730,7 +730,7 @@ class Ftdi(object):
             from usb import version_info
             if version_info[3] == 'b1':
                 usb_api = 1
-        except (ImportError, IndexError), e:
+        except (ImportError, IndexError) as e:
             pass
         for m in ('write', 'read'):
             setattr(self, '_%s' % m, getattr(self, '_%s_v%d' % (m, usb_api)))
@@ -739,7 +739,7 @@ class Ftdi(object):
         """Select the interface to use on the FTDI device"""
         if ifnum == 0:
             ifnum = 1
-        if ifnum-1 not in xrange(config.bNumInterfaces):
+        if ifnum-1 not in range(config.bNumInterfaces):
             raise ValueError("No such interface for this device")
         self.index = ifnum
         self.interface = config[(ifnum-1, 0)]
@@ -760,7 +760,7 @@ class Ftdi(object):
             return self.usb_dev.ctrl_transfer(Ftdi.REQ_OUT, reqtype, value,
                                               self.index, data,
                                               self.usb_write_timeout)
-        except usb.core.USBError, e:
+        except usb.core.USBError as e:
             raise FtdiError('UsbError: %s' % str(e))
 
     def _ctrl_transfer_in(self, reqtype, length):
@@ -769,7 +769,7 @@ class Ftdi(object):
             return self.usb_dev.ctrl_transfer(Ftdi.REQ_IN, reqtype, 0,
                                               self.index, length,
                                               self.usb_read_timeout)
-        except usb.core.USBError, e:
+        except usb.core.USBError as e:
             raise FtdiError('UsbError: %s' % str(e))
 
     def _write_v1(self, data):
@@ -833,7 +833,7 @@ class Ftdi(object):
         best_divisor = 0
         best_baud = 0
         best_baud_diff = 0
-        for i in xrange(2):
+        for i in range(2):
             try_divisor = divisor + i
             if not hispeed:
                 # Round up to supported divisor value
@@ -922,7 +922,8 @@ class Ftdi(object):
     def __get_timeouts(self):
         return self.usb_read_timeout, self.usb_write_timeout
 
-    def __set_timeouts(self, (read_timeout, write_timeout)):
+    def __set_timeouts(self, timeouts):
+        read_timeout, write_timeout = timeouts
         self.usb_read_timeout = read_timeout
         self.usb_write_timeout = write_timeout
 

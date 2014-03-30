@@ -26,9 +26,11 @@
 """Miscelleanous helpers
 
 """
-
+import sys
 import binascii
 import re
+if sys.version_info[0] <= 2:
+    range = xrange
 
 # String values evaluated as true boolean values
 TRUE_BOOLEANS = ['on', 'true', 'enable', 'enabled', 'yes', 'high', '1']
@@ -55,7 +57,7 @@ def hexdump(data, full=False, abbreviate=False):
     result = []
     last = ''
     abv = False
-    for i in xrange(0, len(src), length):
+    for i in range(0, len(src), length):
         s = src[i:i+length]
         if abbreviate:
             if s == last:

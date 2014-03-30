@@ -45,8 +45,8 @@ class SerialFlashTestCase(unittest.TestCase):
     def test_flashdevice_1_name(self):
         """Retrieve device name
         """
-        print "Flash device: %s @ SPI freq %0.1f MHz" % \
-            (self.flash, self.flash.spi_frequency/1E6)
+        print(("Flash device: %s @ SPI freq %0.1f MHz" % \
+            (self.flash, self.flash.spi_frequency/1E6)))
 
     def test_flashdevice_2_read_bandwidth(self):
         """Read the whole device to get READ bandwith
@@ -89,8 +89,8 @@ class SerialFlashTestCase(unittest.TestCase):
         # reached
         length = min(len(self.flash), size)
         start = len(self.flash)-length
-        print "Erase %s from flash @ 0x%06x(may take a while...)" % \
-            (pretty_size(length), start)
+        print(("Erase %s from flash @ 0x%06x(may take a while...)" % \
+            (pretty_size(length), start)))
         delta = time.time()
         self.flash.unlock()
         self.flash.erase(start, length, True)
@@ -101,7 +101,7 @@ class SerialFlashTestCase(unittest.TestCase):
             # bytes per SPI request MAX...). So keep the test sequence short
             # enough
             length = 16<<10
-        print "Build test sequence"
+        print("Build test sequence")
         if not randomize:
             buf = Array('I')
             back = Array('I')
@@ -121,8 +121,8 @@ class SerialFlashTestCase(unittest.TestCase):
             back = Array('B')
             buf.extend((randint(0, 255) for x in range(0, length)))
         bufstr = buf.tostring()
-        print "Writing %s to flash (may take a while...)" % \
-            pretty_size(len(bufstr))
+        print(("Writing %s to flash (may take a while...)" % \
+            pretty_size(len(bufstr))))
         delta = time.time()
         self.flash.write(start, bufstr)
         delta = time.time()-delta
@@ -131,26 +131,26 @@ class SerialFlashTestCase(unittest.TestCase):
         wmd = sha1()
         wmd.update(buf.tostring())
         refdigest = wmd.hexdigest()
-        print "Reading %s from flash" % pretty_size(length)
+        print(("Reading %s from flash" % pretty_size(length)))
         delta = time.time()
         data = self.flash.read(start, length)
         delta = time.time()-delta
         self._report_bw('Read', length, delta)
         #print "Dump flash"
         #print hexdump(data.tostring())
-        print "Verify flash"
+        print("Verify flash")
         rmd = sha1()
         rmd.update(data.tostring())
         newdigest = rmd.hexdigest()
-        print "Reference:", refdigest
-        print "Retrieved:", newdigest
+        print(("Reference:", refdigest))
+        print(("Retrieved:", newdigest))
         if refdigest != newdigest:
             errcount = 0
             back.fromstring(data)
-            for pos in xrange(len(buf)):
+            for pos in range(len(buf)):
                 if buf[pos] != data[pos]:
-                    print 'Invalid byte @ offset 0x%06x: 0x%02x / 0x%02x' % \
-                        (pos, buf[pos], back[pos])
+                    print(('Invalid byte @ offset 0x%06x: 0x%02x / 0x%02x' % \
+                        (pos, buf[pos], back[pos])))
                     errcount += 1
                     # Stop report after 16 errors
                     if errcount >= 32:
@@ -160,11 +160,11 @@ class SerialFlashTestCase(unittest.TestCase):
     @classmethod
     def _report_bw(cls, action, length, time):
         if time < 1.0:
-            print "%s %s in %d ms @ %s/s" % (action, pretty_size(length),
-                1000*time, pretty_size(length/time))
+            print(("%s %s in %d ms @ %s/s" % (action, pretty_size(length),
+                1000*time, pretty_size(length/time))))
         else:
-            print "%s %s in %d seconds @ %s/s" % (action, pretty_size(length),
-                time, pretty_size(length/time))
+            print(("%s %s in %d seconds @ %s/s" % (action, pretty_size(length),
+                time, pretty_size(length/time))))
         
 def suite():
     return unittest.makeSuite(SerialFlashTestCase, 'test')

@@ -15,11 +15,18 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+from __future__ import print_function
+
+import sys
 import threading
+if sys.version_info[0] >= 3:
+    from urllib.parse import urlsplit
+else:
+    from urlparse import urlsplit
 import usb.core
 import usb.util
-from misc import to_int
-from urlparse import urlsplit
+
+from .misc import to_int
 
 __all__ = ['UsbTools']
 
@@ -99,10 +106,10 @@ class UsbTools(object):
                             if not dev.is_kernel_driver_active(ifnum):
                                 continue
                             dev.detach_kernel_driver(ifnum)
-                        except NotImplementedError, e:
+                        except NotImplementedError as e:
                             # only libusb 1.x backend implements this method
                             break
-                        except usb.core.USBError, e:
+                        except usb.core.USBError as e:
                             pass
                 # only change the active configuration if the active one is
                 # not the first. This allows other libusb sessions running
@@ -327,7 +334,7 @@ class UsbTools(object):
                 # high interfaces are dedicated to UARTs
                 interfaces.append((scheme, vendor, product, serial, j, d))
         if interfaces:
-            print >> out, "Available interfaces:"
+            print("Available interfaces:", file=out)
             for scheme, vendor, product, serial, j, d in interfaces:
                 if d:
                     desc = '  (%s)' % d
@@ -337,8 +344,8 @@ class UsbTools(object):
                 # emitted in the output stream encoding format, so replace
                 # them
                 enc_report = report.encode(out.encoding, 'replace')
-                print >> out, enc_report
-            print >> out, ''
+                print(enc_report, file=out)
+            print('', file=out)
 
     @staticmethod
     def get_string(device, strname):
@@ -348,6 +355,6 @@ class UsbTools(object):
             from usb import version_info
             if version_info[3] == 'b1':
                 return usb.util.get_string(device, 64, strname)
-        except (ImportError, IndexError), e:
+        except (ImportError, IndexError) as e:
             pass
         return usb.util.get_string(device, strname)
